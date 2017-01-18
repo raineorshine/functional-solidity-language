@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "author": {
+    "name": "Raine Revere",
+    "email": "raineorshine@gmail.com",
+    "url": "https://github.com/raineorshine"
+  },
+  "scripts": {
+    "build": "pegjs grammar.pegjs",
+    "test": "node test.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "pegjs": "^0.10.0"
+  }
+}

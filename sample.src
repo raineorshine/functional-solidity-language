@@ -1,0 +1,42 @@
+// built-ins
+// State
+// Contract
+// Ether
+// Function
+// Value
+// Call
+// Tuple
+// Address
+
+// type declaration
+MyContractState : State { balances }
+
+// type declaration with parameterized, built-in type
+MyContract : Contract MyContractState
+
+// test
+a = 10
+b = 20
+
+// Contract constructor
+MyContract = Contract
+
+  // type declaration (function)
+  deposit : MyContractState Ether -> MyContractState
+
+  // // test
+  // f a = 0
+  // f b = x
+  // f d = 1
+
+  // // State constructor
+  // deposit state eth = MyContractState test
+  // deposit state eth = MyContractState { balance = 0 }
+  // deposit state eth = MyContractState { balance = foo x }
+  // // deposit state eth = MyContractState { balance = balance + eth }
+
+  // // named type definition
+  // send : MyContractState (balance : Ether this) (a : Address) -> (EtherTransfer a balance, MyContractState)
+  // send state eth to = (a,b,c)
+  // send state eth to = (EtherTransfer to eth, state)
+
