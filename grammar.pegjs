@@ -13,44 +13,78 @@ comment 'comment'
   }
 
 typedec 'typedec'
-  = id:id _+ ':' _+ type:type {
+  = id:id _+ ':' _+ definition:type {
     return {
       name: 'typedec',
-      value: { id, type }
+      value: { id: id.value, definition }
     }
   }
 
 type 'type'
-  = [^\n]+ { return text() }
+  = function
+  / call
+  / id
+  / [^\n]+ { return { UNKNOWN_TYPE: text() } }
+
+function 'function'
+  = from:fvalue _+ '->' _+ to:fvalue {
+    return {
+      type: 'function',
+      value: { from, to }
+    }
+  }
+
+fvalue 'fvalue'
+  = call
+  / id
+  / namedParam
+  / '(' content:fvalue ')' { return content }
+
+namedParam
+  = '(' id:id _+ ':' _+ definition:fvalue ')' {
+    return {
+      type: 'namedParam',
+      value: {
+        id: id.value,
+        definition
+      }
+    }
+  }
 
 def 'def'
-  = id:id params:params? _* '=' _+ body:value {
+  = id:id params:params? _+ '=' _+ body:value {
     return {
       type: 'def',
-      value: { id, params: params || [], body }
+      value: { id: id.value, params: params || [], body }
     }
   }
 
 id 'id'
-  = [a-zA-Z]+ { return text() }
+  = [a-zA-Z]+ {
+    return {
+      type: 'id',
+      value: text()
+    }
+  }
 
 number 'number'
   = [0-9]+ { return parseInt(text(), 10) }
 
 value 'value'
   = contract
-  / tuple
+  / function
   / call
+  / tuple
   / id
   / number
   / UNKNOWN_VALUE
 
 contract 'contract'
-  = 'Contract' _+ body:item* {
+  = 'Contract' _+ body:contractItem* {
     return body
   }
 
-item 'item'
+contractItem 'contractItem'
   = comment
   / typedec
   / def
@@ -62,17 +96,6 @@ UNKNOWN_VALUE 'UNKNOWN_VALUE'
       UNKNOWN_VALUE: text()
     }
   }
-/*
-  = id:id _+ params:params _+ '=' _+ value:[^\n]+ {
-    return {
-      type: 'function',
-      value: {
-        id,
-        value
-      }
-    }
-  }
-*/
 
 params 'params'
   = params:(_+ id)+ {
@@ -99,10 +122,10 @@ tupleItems 'tupleItems'
   }
 
 call 'call'
-  = id:id args:args+ {
+  = id:id args:args {
     return {
       type: 'call',
-      value: { id, args }
+      value: { id: id.value, args }
     }
   }
 
@@ -112,7 +135,7 @@ args 'args'
   }
 
 recordDef 'recordDef'
-  = '{ ' records:recordDefAssignment ' }' {
+  = '{ ' records:(recordDefAssignment/id) ' }' {
     return {
       type: 'recordDef',
       value: { records: [records] }
@@ -121,5 +144,5 @@ recordDef 'recordDef'
 
 recordDefAssignment
   = id:id _+ '=' _+ value:value {
-    return { id, value }
+    return { id: id.value, value }
   }
