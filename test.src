@@ -1,0 +1,47 @@
+// test
+a = 5 + 10
+c = a + b
+a = 10
+b = 20
+
+// test
+f a = 0
+f b = x
+f d = 1
+
+// test
+a : Integer
+b : List Integer
+add : Integer -> Integer
+addParen : (Integer) -> Integer
+addAll : (List Integer) -> List Integer
+// TODO: parse function before call
+// addMore : List Integer -> List Integer
+
+// type declaration with parameterized, built-in type
+MyContract : Contract MyContractState
+
+MyContractState : State { balances }
+
+// Contract constructor
+MyContract = Contract
+
+  // type declaration (function)
+  deposit : MyContractState -> Ether -> MyContractState
+
+  // State constructor
+  deposit state eth = MyContractState test
+  deposit state eth = MyContractState { balance = 0 }
+  deposit state eth = MyContractState { balance = foo x }
+  deposit state eth = MyContractState { balance = balance + eth }
+
+  send state eth to = (a,b,c)
+  send state eth to = (EtherTransfer to eth, state)
+
+  // named type definition
+  foo : Integer -> Integer -> Integer
+
+  foo : (a : Integer) -> Integer
+  send : MyContractState -> (a : Address) -> (EtherTransfer a balance, MyContractState)
+  send : MyContractState -> (balance : Ether this) -> (a : Address) -> (EtherTransfer a balance, MyContractState)
+

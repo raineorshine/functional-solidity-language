@@ -15,7 +15,7 @@ comment 'comment'
 typedec 'typedec'
   = id:id _+ ':' _+ definition:type {
     return {
-      name: 'typedec',
+      type: 'typedec',
       value: { id: id.value, definition }
     }
   }
@@ -27,10 +27,10 @@ type 'type'
   / [^\n]+ { return { UNKNOWN_TYPE: text() } }
 
 function 'function'
-  = from:fvalue _+ '->' _+ to:fvalue {
+  = param:fvalue _+ '->' _+ returns:(function/fvalue) {
     return {
       type: 'function',
-      value: { from, to }
+      value: { param, returns }
     }
   }
 
@@ -38,7 +38,22 @@ fvalue 'fvalue'
   = call
   / id
   / namedParam
+  / fvaluetuple
   / '(' content:fvalue ')' { return content }
+
+// TODO: unify this with tuple
+fvaluetuple 'fvaluetuple'
+  = '(' items:fvalueTupleItems ')' {
+    return {
+      type: 'tuple',
+      value: items
+    }
+  }
+
+fvalueTupleItems 'fvalueTupleItems'
+  = head:fvalue tail:(',' _* fvalueTupleItems)? {
+    return [head].concat(tail ? tail[2] : [])
+  }
 
 namedParam
   = '(' id:id _+ ':' _+ definition:fvalue ')' {
@@ -75,13 +90,24 @@ value 'value'
   / function
   / call
   / tuple
+  / l:(id/number) _+ op:infix _+ r:(id/number) {
+    return { l, r, op }
+  }
   / id
   / number
   / UNKNOWN_VALUE
 
+infix 'infix'
+  = [+\-*/]
+  / '&&'
+  / '||'
+
 contract 'contract'
   = 'Contract' _+ body:contractItem* {
-    return body
+    return {
+      type: 'contract',
+      value: body
+    }
   }
 
 contractItem 'contractItem'
@@ -99,7 +125,7 @@ UNKNOWN_VALUE 'UNKNOWN_VALUE'
 
 params 'params'
   = params:(_+ id)+ {
-    return params.map(p => p[1])
+    return params.map(p => p[1].value)
   }
 
 _ 'whitespace'
@@ -135,14 +161,20 @@ args 'args'
   }
 
 recordDef 'recordDef'
-  = '{ ' records:(recordDefAssignment/id) ' }' {
+  // TODO: separate out record types in parameters from record constructors
+  = '{ ' records:(recordDefAssignment/recordType/id) ' }' {
     return {
       type: 'recordDef',
       value: { records: [records] }
     }
   }
 
-recordDefAssignment
+recordType 'recordType'
+  = id:id ' '+ ':' ' '+ value:id {
+    return { id: id.value, value }
+  }
+
+recordDefAssignment 'recordDefAssignment'
   = id:id _+ '=' _+ value:value {
     return { id: id.value, value }
   }

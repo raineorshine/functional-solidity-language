@@ -1,16 +1,22 @@
 {
+  "name": "functional-solidity-language",
+  "description": "A typed, functional language that targets the EVM.",
   "private": true,
   "author": {
     "name": "Raine Revere",
     "email": "raineorshine@gmail.com",
     "url": "https://github.com/raineorshine"
   },
+  "bin": {
+    "functional-solidity-language": "./bin.js"
+  },
   "scripts": {
     "build": "pegjs grammar.pegjs",
-    "test": "node test.js"
+    "test": "node bin.js test.src",
+    "sample": "node bin.js sample.src"
   },
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "pegjs": "^0.10.0"
   }
 }
