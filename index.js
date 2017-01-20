@@ -67,7 +67,7 @@ renderer.contract = (types, value, id) => {
     .filter(x => x)
     .map(x => '  ' + x + '\n')
     .join('\n')
-  return `contract {\n${members}\n${contractBody}}`
+  return `contract ${id} {\n${members}\n${contractBody}}`
 }
 
 function renderContractMethod(types, contractStateType, id, params, body) {
