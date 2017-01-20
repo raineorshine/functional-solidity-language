@@ -30,7 +30,7 @@ Equivalent contract in Solidity:
 * <i>It doesn't do any type-checking and will break on almost any other input. Really it's just a proof-of-concept.</i>
 
 ```js
-contract {
+contract MyContract {
   public uint balance;
 
   function deposit(msg.value)  {
