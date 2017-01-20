@@ -51,10 +51,10 @@ Generate solidity from the given sourcefile:
 $ functional-solidity-language [sourcefile]
 ```
 
-Generate just the AST:
+Generate just the parsed AST:
 
 ```sh
-$ functional-solidity-language --ast [sourcefile]
+$ functional-solidity-language --parse [sourcefile]
 ```
 
 ## Status

@@ -10,9 +10,9 @@ if (process.argv[2] === '--help') {
   console.log('')
   console.log('    $ functional-solidity-language [sourcefile]')
   console.log('')
-  console.log('  Generate just the AST:')
+  console.log('  Generate just the parsed AST:')
   console.log('')
-  console.log('    $ functional-solidity-language --ast [sourcefile]')
+  console.log('    $ functional-solidity-language --parse [sourcefile]')
   console.log('')
   process.exit(0)
 }
@@ -36,7 +36,7 @@ catch (e) {
 
 // print the AST
 
-if (process.argv[2] === '--ast') {
+if (process.argv[2] === '--parse') {
   const prettyAst = JSON.stringify(ast, null, 2)
     .replace(/,?\n *null/g, '')
   console.log(prettyAst)
